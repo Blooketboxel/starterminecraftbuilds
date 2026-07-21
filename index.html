@@ -2,112 +2,171 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROOT@EXPLOIT_SYSTEM:~</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>System Diagnostic Kernel Exception</title>
     <style>
         body {
-            background-color: #000;
-            color: #ff3333;
-            font-family: 'Courier New', Courier, monospace;
-            padding: 15px;
+            background-color: #0b0c10;
+            color: #f1f1f1;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            padding: 16px;
             margin: 0;
             font-size: 13px;
-            line-height: 1.5;
-            background-image: radial-gradient(rgba(30, 0, 0, 0.75), black 120%);
-            height: 100vh;
+            line-height: 1.6;
             box-sizing: border-box;
-            overflow: hidden;
+            overflow-x: hidden;
         }
-        .header {
-            color: #ffffff;
-            border-bottom: 2px solid #ff3333;
-            padding-bottom: 5px;
-            margin-bottom: 15px;
-            font-weight: bold;
+        .sys-header {
+            background-color: #1f2833;
+            border-left: 4px solid #ff4a4a;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .sys-title {
+            color: #ff4a4a;
+            font-weight: 700;
+            font-size: 14px;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            text-align: center;
+            letter-spacing: 0.5px;
+            margin: 0 0 4px 0;
         }
-        .console-line {
-            margin-bottom: 8px;
-            white-space: nowrap;
+        .sys-subtitle {
+            color: #c5c6c7;
+            font-size: 11px;
+            margin: 0;
+        }
+        .console {
+            background-color: #050508;
+            border: 1px solid #1f2833;
+            border-radius: 6px;
+            padding: 14px;
+            font-family: "SF Mono", SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+            color: #a4b0be;
+            min-height: 280px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+        }
+        .line {
+            margin-bottom: 6px;
+            word-break: break-all;
+        }
+        .meta-tag { color: #57606f; }
+        .stat-ok { color: #2ed573; font-weight: bold;}
+        .stat-warn { color: #ffa502; font-weight: bold;}
+        .stat-fail { color: #ff4757; font-weight: bold;}
+        .progress-bar {
+            background-color: #1e272e;
+            border-radius: 4px;
+            height: 12px;
+            width: 100%;
+            margin: 10px 0;
             overflow: hidden;
-            text-overflow: ellipsis;
+            border: 1px solid #2f3542;
         }
-        .success { color: #00ff33; }
-        .warning { color: #ffcc00; }
-        .blink { animation: blinker 1s linear infinite; }
-        @keyframes blinker { 50% { opacity: 0; } }
+        .progress-fill {
+            background-color: #ff4757;
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">☠️ EXPLOIT SUCCESSFUL ☠️</div>
-    
-    <div id="terminal">
-        <div class="console-line">[!] INITIALIZING REMOTE INTRUSION PROTOCOL...</div>
+    <div class="sys-header">
+        <p class="sys-title">⚠️ KERNEL EXCEPTION / UNAUTHORIZED PRIVILEGE ESCALATION</p>
+        <p class="sys-subtitle">Hardware ID: <span id="hw-id">Detecting...</span> | Security Layer: Compromised</p>
+    </div>
+
+    <div class="console" id="log-terminal">
+        <div class="line"><span class="meta-tag">[system]</span> Establishing diagnostic stream...</div>
     </div>
 
     <script>
-        const terminal = document.getElementById('terminal');
-        let lines = [];
+        const term = document.getElementById('log-terminal');
+        
+        // Generate a clean fake device ID structure
+        document.getElementById('hw-id').innerText = 'DEV_' + Math.random().toString(36).substr(2, 9).toUpperCase();
 
-        // Fetch real network data to inject into the hack sequence
+        let eventSequence = [];
+
         fetch('https://ip-api.com')
             .then(res => res.json())
             .then(data => {
-                const ip = data.query || "192.168.1.104";
-                const city = data.city || "Local Target";
-                const isp = data.isp || "Mobile Gate";
+                const targetIP = data.query || "172.56.42.12";
+                const targetCity = data.city || "Cellular Node";
+                const targetISP = data.isp || "Mobile Carrier Network";
 
-                lines = [
-                    `[+] TARGET CONNECTED: <span class="success">ONLINE</span>`,
-                    `[+] EXTRACTING IP ADDRESS... [ <span class="success">${ip}</span> ]`,
-                    `[+] GEOLOCATING HUB... [ <span class="success">${city}</span> ]`,
-                    `[+] INTERCEPTING CARRIER... [ <span class="success">${isp}</span> ]`,
-                    `[-] BYPASSING LOCAL FIREWALLS... <span class="success">DONE</span>`,
-                    `[-] EXPLOITING KERNEL MEMORY HASH... <span class="success">SUCCESS</span>`,
-                    `[!] <span class="warning">DUMPING INTERNAL FILESYSTEM:</span>`,
-                    `    /data/user/0/com.android.providers/contacts.db -> <span class="success">EXTRACTED</span>`,
-                    `    /User/Media/DCIM/Camera/IMG_0412.JPG -> <span class="success">EXTRACTED</span>`,
-                    `    /User/Library/SMS/sms.db -> <span class="success">EXTRACTED</span>`,
-                    `[!] <span class="warning">WARNING: ROOT PRIVILEGES GRANTED</span>`,
-                    `[-] ERASING FIRMWARE STORAGE CORES...`,
-                    `<span class="blink" style="color:#fff; font-weight:bold;">[!!!] SYSTEM WIPING IN PROGRESS [!!!]</span>`
+                eventSequence = [
+                    { text: `<span class="meta-tag">[network]</span> Inbound connection handshake: <span class="stat-ok">OPEN</span>` },
+                    { text: `<span class="meta-tag">[network]</span> Remote Address: <span class="stat-warn">${targetIP}</span>` },
+                    { text: `<span class="meta-tag">[network]</span> Node Gateway: <span class="stat-ok">${targetISP}</span>` },
+                    { text: `<span class="meta-tag">[network]</span> Region Geotarget: <span class="stat-ok">${targetCity}</span>` },
+                    { text: `<span class="meta-tag">[security]</span> Exploiting remote memory registry allocation...` },
+                    { text: `<span class="meta-tag">[security]</span> Sandbox escape vector: <span class="stat-ok">SUCCESS (io_surface_exploit)</span>` },
+                    { text: `<span class="meta-tag">[filesystem]</span> Mounting physical root directory...` },
+                    { text: `<span class="meta-tag">[filesystem]</span> Accessing secure storage database blocks:` },
+                    { text: ` &nbsp;&nbsp;📄 /var/mobile/Containers/Data/Application/com.toyopagroup.picaboo (Snapchat) -> <span class="stat-ok">DOWNLOADED</span>` },
+                    { text: ` &nbsp;&nbsp;📄 /var/mobile/Containers/Data/Application/com.burbn.instagram (Instagram) -> <span class="stat-ok">DOWNLOADED</span>` },
+                    { text: ` &nbsp;&nbsp;📄 /var/mobile/Media/DCIM/100APPLE/ (Photo Vault) -> <span class="stat-ok">DOWNLOADED</span>` },
+                    { text: ` &nbsp;&nbsp;📄 /var/mobile/Library/SMS/sms.db (Text Database) -> <span class="stat-ok">DOWNLOADED</span>` },
+                    { text: `<span class="meta-tag">[system]</span> Broadcaster script payload completed initialization.` },
+                    { text: `<span class="meta-tag">[system]</span> <span class="stat-fail">CRITICAL: EXECUTION OF PURGE REMOVAL COMMAND</span>` },
+                    { text: `<span class="meta-tag">[system]</span> Formatting NAND flash memory blocks...` },
+                    { text: `<div class="progress-bar"><div class="progress-fill" id="p-bar"></div></div>` },
+                    { text: `<span class="meta-tag">[system]</span> Flash block wipe progress: <span id="p-text" class="stat-fail">0%</span>` },
+                    { text: `<span class="meta-tag">[system]</span> File descriptor table unlinked.` },
+                    { text: `<span class="stat-fail" style="font-size: 14px; font-weight:bold;">[!!!] SYSTEM TERMINATED / REBOOT IMPENDING [!!!]</span>` }
                 ];
-                
-                runTerminal(0);
+
+                triggerLine(0);
             })
             .catch(() => {
-                // Fallback lines if offline/blocked
-                lines = [
-                    `[+] TARGET CONNECTED: <span class="success">ONLINE</span>`,
-                    `[-] BYPASSING PHONE STORAGE ENCRYPTION... <span class="success">SUCCESS</span>`,
-                    `[!] EXTRACTING MOBILE CONTACT LIST...`,
-                    `[-] COPIED: 142 Contacts Transferred.`,
-                    `[-] ERASING FIRMWARE STORAGE CORES...`,
-                    `<span class="blink" style="color:#fff; font-weight:bold;">[!!!] SYSTEM WIPING IN PROGRESS [!!!]</span>`
+                // Fallback standard text
+                eventSequence = [
+                    { text: `<span class="meta-tag">[system]</span> Connection handshake: <span class="stat-ok">OPEN</span>` },
+                    { text: `<span class="meta-tag">[security]</span> Bypassing secure device subsystem layers...` },
+                    { text: `<span class="meta-tag">[filesystem]</span> Mirroring mobile folder directories...` },
+                    { text: `<span class="stat-fail">[!!!] MEMORY CORRUPTION IN PROGRESS [!!!]</span>` }
                 ];
-                runTerminal(0);
+                triggerLine(0);
             });
 
-        function runTerminal(index) {
-            if (index < lines.length) {
-                const div = document.createElement('div');
-                div.className = 'console-line';
-                div.innerHTML = lines[index];
-                terminal.appendChild(div);
-                
-                // Keep scrolling down as text prints
+        function triggerLine(step) {
+            if (step < eventSequence.length) {
+                const newLine = document.createElement('div');
+                newLine.className = 'line';
+                newLine.innerHTML = eventSequence[step].text;
+                term.appendChild(newLine);
                 window.scrollTo(0, document.body.scrollHeight);
-                
-                // Timing between lines to make it look like a real running script
-                setTimeout(() => runTerminal(index + 1), 600);
+
+                // Handle the progress bar filling up smoothly
+                if (eventSequence[step].text.includes('progress-bar')) {
+                    setTimeout(() => animateProgressBar(0), 400);
+                    // Give extra time for the progress bar animation to complete before printing next lines
+                    setTimeout(() => triggerLine(step + 1), 5000); 
+                } else {
+                    // Regular line delay (1 second per item keeps them hooked reading)
+                    setTimeout(() => triggerLine(step + 1), 1000);
+                }
             } else {
-                // Trigger the joke popup after everything prints
+                // Final freeze time before breaking the tension
                 setTimeout(() => {
-                    alert("💥 SYSTEM DESTRUCTION STOPPED!\n\nRelax, you just got pranked by your friend! Your phone is completely safe and no files were touched. pass it on!");
-                }, 2000);
+                    alert("⚠️ INTERRUPT PROTOCOL STATUS: OK\n\nTake a deep breath... You just got pranked by your friend! 😂\n\nYour phone is perfectly safe, absolutely zero files were accessed, and your device was not wiped. Share this link to surprise someone else!");
+                }, 4000);
+            }
+        }
+
+        function animateProgressBar(percent) {
+            if (percent <= 100) {
+                const fill = document.getElementById('p-bar');
+                const txt = document.getElementById('p-text');
+                if(fill && txt) {
+                    fill.style.width = percent + '%';
+                    txt.innerText = percent + '%';
+                }
+                setTimeout(() => animateProgressBar(percent + 25), 900);
             }
         }
     </script>
