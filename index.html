@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROOT@EXPLOIT_SYSTEM:~</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #ff3333;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 15px;
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.5;
+            background-image: radial-gradient(rgba(30, 0, 0, 0.75), black 120%);
+            height: 100vh;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        .header {
+            color: #ffffff;
+            border-bottom: 2px solid #ff3333;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+        .console-line {
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .success { color: #00ff33; }
+        .warning { color: #ffcc00; }
+        .blink { animation: blinker 1s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <div class="header">☠️ EXPLOIT SUCCESSFUL ☠️</div>
+    
+    <div id="terminal">
+        <div class="console-line">[!] INITIALIZING REMOTE INTRUSION PROTOCOL...</div>
+    </div>
+
+    <script>
+        const terminal = document.getElementById('terminal');
+        let lines = [];
+
+        // Fetch real network data to inject into the hack sequence
+        fetch('https://ip-api.com')
+            .then(res => res.json())
+            .then(data => {
+                const ip = data.query || "192.168.1.104";
+                const city = data.city || "Local Target";
+                const isp = data.isp || "Mobile Gate";
+
+                lines = [
+                    `[+] TARGET CONNECTED: <span class="success">ONLINE</span>`,
+                    `[+] EXTRACTING IP ADDRESS... [ <span class="success">${ip}</span> ]`,
+                    `[+] GEOLOCATING HUB... [ <span class="success">${city}</span> ]`,
+                    `[+] INTERCEPTING CARRIER... [ <span class="success">${isp}</span> ]`,
+                    `[-] BYPASSING LOCAL FIREWALLS... <span class="success">DONE</span>`,
+                    `[-] EXPLOITING KERNEL MEMORY HASH... <span class="success">SUCCESS</span>`,
+                    `[!] <span class="warning">DUMPING INTERNAL FILESYSTEM:</span>`,
+                    `    /data/user/0/com.android.providers/contacts.db -> <span class="success">EXTRACTED</span>`,
+                    `    /User/Media/DCIM/Camera/IMG_0412.JPG -> <span class="success">EXTRACTED</span>`,
+                    `    /User/Library/SMS/sms.db -> <span class="success">EXTRACTED</span>`,
+                    `[!] <span class="warning">WARNING: ROOT PRIVILEGES GRANTED</span>`,
+                    `[-] ERASING FIRMWARE STORAGE CORES...`,
+                    `<span class="blink" style="color:#fff; font-weight:bold;">[!!!] SYSTEM WIPING IN PROGRESS [!!!]</span>`
+                ];
+                
+                runTerminal(0);
+            })
+            .catch(() => {
+                // Fallback lines if offline/blocked
+                lines = [
+                    `[+] TARGET CONNECTED: <span class="success">ONLINE</span>`,
+                    `[-] BYPASSING PHONE STORAGE ENCRYPTION... <span class="success">SUCCESS</span>`,
+                    `[!] EXTRACTING MOBILE CONTACT LIST...`,
+                    `[-] COPIED: 142 Contacts Transferred.`,
+                    `[-] ERASING FIRMWARE STORAGE CORES...`,
+                    `<span class="blink" style="color:#fff; font-weight:bold;">[!!!] SYSTEM WIPING IN PROGRESS [!!!]</span>`
+                ];
+                runTerminal(0);
+            });
+
+        function runTerminal(index) {
+            if (index < lines.length) {
+                const div = document.createElement('div');
+                div.className = 'console-line';
+                div.innerHTML = lines[index];
+                terminal.appendChild(div);
+                
+                // Keep scrolling down as text prints
+                window.scrollTo(0, document.body.scrollHeight);
+                
+                // Timing between lines to make it look like a real running script
+                setTimeout(() => runTerminal(index + 1), 600);
+            } else {
+                // Trigger the joke popup after everything prints
+                setTimeout(() => {
+                    alert("💥 SYSTEM DESTRUCTION STOPPED!\n\nRelax, you just got pranked by your friend! Your phone is completely safe and no files were touched. pass it on!");
+                }, 2000);
+            }
+        }
+    </script>
+</body>
+</html>
